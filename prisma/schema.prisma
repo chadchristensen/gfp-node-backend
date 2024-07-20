@@ -12,3 +12,43 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum CATEGORY_NAME {
+  HOUSEHOLD
+  TECH
+  CLOTHING
+}
+
+model Category {
+  id        String        @id @default(uuid())
+  name      CATEGORY_NAME @default(TECH)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @default(now())
+  posts     Post[]
+}
+
+model Post {
+  id                String   @id @default(uuid())
+  title             String   @db.VarChar(255)
+  slug              String   @unique @db.VarChar(255)
+  category          Category @relation(fields: [categoryId], references: [id])
+  categoryId        String
+  description       String
+  image_src         String
+  image_alt_text    String   @db.VarChar(255)
+  publish_date      DateTime
+  is_affiliate_link Boolean  @default(false)
+  cta_text          String   @db.VarChar(120)
+  cta_link          String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
+  author            User     @relation(fields: [authorId], references: [id])
+  authorId          String
+}
+
+model User {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String
+  posts Post[]
+}
