@@ -2,11 +2,11 @@
 // NOTE: You can remove the first line if you don't plan to release an
 // executable package. E.g. code that can be used as cli like prettier or eslint
 
-const main = () => {
-  console.log("hello Node.js and Typescript world :]");
-  console.log("live reloading");
-  console.log("live reloading2");
-};
+// const main = () => {
+//   console.log("hello Node.js and Typescript world :]");
+//   console.log("live reloading");
+//   console.log("live reloading2");
+// };
 
 // This was just here to force a linting error for now to demonstrate/test the
 // eslint pipeline. You can uncomment this and run "yarn lint:check" to test the
@@ -17,4 +17,8 @@ const main = () => {
 //   console.log("equal!");
 // }
 
-main();
+import app from "./server";
+
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
+});
