@@ -18,6 +18,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
-        run: yarn --immutable
+        run: npm i
       - name: Compile
-        run: yarn compile
+        run: npm run compile

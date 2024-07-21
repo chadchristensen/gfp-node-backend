@@ -13,6 +13,6 @@ jobs:
         with:
           node-version: 20.x
       - name: Install Dependencies
-        run: yarn --immutable
+        run: npm i
       - name: Lint
-        run: yarn lint:check
+        run: npm run lint:check
