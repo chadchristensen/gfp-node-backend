@@ -56,4 +56,9 @@ router.put(
 
 router.delete("/categories/:categoryId", deleteCategory);
 
+router.use((error, req, res, next) => {
+  console.error(error);
+  res.json({ message: "Error in subrouter" });
+});
+
 export default router;

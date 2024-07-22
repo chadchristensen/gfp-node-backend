@@ -20,4 +20,14 @@ app.use("/api", protect, router);
 app.post("/users", createUser);
 app.post("/signin", signIn);
 
+app.use((err, req, res, next) => {
+  if (err.type === "ValidationError") {
+    res.status(401).json({ message: "Bad Request" });
+  } else if (err.type === "AuthorizationError") {
+    res.status(403).json({ message: "Unauthorized" });
+  } else {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 export default app;

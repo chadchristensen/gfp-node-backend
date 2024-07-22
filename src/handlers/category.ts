@@ -1,17 +1,17 @@
 import { RequestHandler } from "express";
 import prisma from "../db";
 
-export const getAllCategories: RequestHandler = async (req, res) => {
+export const getAllCategories: RequestHandler = async (req, res, next) => {
   // TODO: Add pagination and filtering
   try {
     const categories = await prisma.category.findMany();
     res.json({ data: categories });
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
 
-export const getCategoryById: RequestHandler = async (req, res) => {
+export const getCategoryById: RequestHandler = async (req, res, next) => {
   try {
     const category = await prisma.category.findUnique({
       where: { id: req.params.categoryId },
@@ -23,11 +23,11 @@ export const getCategoryById: RequestHandler = async (req, res) => {
 
     res.json({ data: category });
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
 
-export const createCategory: RequestHandler = async (req, res) => {
+export const createCategory: RequestHandler = async (req, res, next) => {
   try {
     const newCategory = await prisma.category.create({
       data: req.body,
@@ -35,11 +35,11 @@ export const createCategory: RequestHandler = async (req, res) => {
 
     res.status(201).json({ data: newCategory });
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
 
-export const updateCategory: RequestHandler = async (req, res) => {
+export const updateCategory: RequestHandler = async (req, res, next) => {
   try {
     const updatedCategory = await prisma.category.update({
       where: { id: req.params.categoryId },
@@ -48,11 +48,11 @@ export const updateCategory: RequestHandler = async (req, res) => {
 
     res.json({ data: updatedCategory });
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
 
-export const deleteCategory: RequestHandler = async (req, res) => {
+export const deleteCategory: RequestHandler = async (req, res, next) => {
   try {
     const deletedCategory = await prisma.category.delete({
       where: { id: req.params.categoryId },
@@ -60,6 +60,6 @@ export const deleteCategory: RequestHandler = async (req, res) => {
 
     res.status(204).json({ data: deletedCategory });
   } catch (error) {
-    console.error(error);
+    next(error);
   }
 };
