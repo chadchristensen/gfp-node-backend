@@ -21,6 +21,7 @@ enum CATEGORY_NAME {
 
 model Category {
   id        String        @id @default(uuid())
+  // TODO: Make category name unique
   name      CATEGORY_NAME @default(TECH)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @default(now())
