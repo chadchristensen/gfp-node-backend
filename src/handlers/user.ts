@@ -2,14 +2,22 @@ import { RequestHandler } from "express";
 import prisma from "../db";
 import { comparePasswords, createJWT, hashPassword } from "src/modules/auth";
 
+export type User = {
+  id: string;
+  email: string;
+  password: string;
+  name: string | null;
+};
+
 export const createUser: RequestHandler = async (req, res, next) => {
+  const { email, password, name }: User = req.body;
   try {
-    const hashedPassword = await hashPassword(req.body.password);
+    const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({
       data: {
-        email: req.body.email,
+        email: email,
         password: hashedPassword,
-        name: req.body.name,
+        name: name,
       },
     });
     const token = await createJWT(user);
@@ -21,18 +29,16 @@ export const createUser: RequestHandler = async (req, res, next) => {
 };
 
 export const signIn: RequestHandler = async (req, res, next) => {
+  const { email, password }: User = req.body;
   try {
     const user = await prisma.user.findUnique({
-      where: { email: req.body.email },
+      where: { email },
     });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const isPasswordValid = await comparePasswords(
-      req.body.password,
-      user.password,
-    );
+    const isPasswordValid = await comparePasswords(password, user.password);
 
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
