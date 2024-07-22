@@ -1,26 +1,59 @@
 import { Router } from "express";
+import { handleInputErrors } from "./modules/middleware";
+import {
+  categoryValidationRules,
+  postValidationRules,
+} from "./modules/validators";
+import {
+  createPost,
+  deletePost,
+  getAllPosts,
+  getPostById,
+  updatePost,
+} from "./handlers/post";
+import {
+  createCategory,
+  deleteCategory,
+  getAllCategories,
+  getCategoryById,
+  updateCategory,
+} from "./handlers/category";
 
 const router = Router();
 
-router.get("/posts", (req, res) => {
-  res.json({ message: "posts fetched" });
-});
+router.get("/posts", getAllPosts);
 
-router.get("/posts/:postId", (req, res) => {
-  res.json({ message: "post fetched" });
-});
+router.get("/posts/:postId", getPostById);
 
-router.post("/posts", (req, res) => {
-  // TODO: Create a new post
-  res.json({ message: "post created" });
-});
+router.post("/posts", postValidationRules, handleInputErrors, createPost);
 
-router.put("/posts/:postId", (req, res) => {
-  res.json({ message: "post updated" });
-});
+router.put(
+  "/posts/:postId",
+  postValidationRules,
+  handleInputErrors,
+  updatePost,
+);
 
-router.delete("/posts/:postId", (req, res) => {
-  res.json({ message: "post deleted" });
-});
+router.delete("/posts/:postId", deletePost);
+
+router.get("/categories", getAllCategories);
+
+router.get("/categories/:categoryId", getCategoryById);
+
+router.post(
+  "/categories",
+  categoryValidationRules,
+  handleInputErrors,
+  createCategory,
+);
+
+router.put(
+  "/categories/:categoryId",
+  categoryValidationRules,
+  handleInputErrors,
+  updateCategory,
+);
+
+router.delete("/categories/:categoryId", deleteCategory);
 
 export default router;
