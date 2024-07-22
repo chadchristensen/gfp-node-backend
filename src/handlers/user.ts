@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import prisma from "../db";
 import { comparePasswords, createJWT, hashPassword } from "src/modules/auth";
 
-export const createUser: RequestHandler = async (req, res) => {
+export const createUser: RequestHandler = async (req, res, next) => {
   try {
     const hashedPassword = await hashPassword(req.body.password);
     const user = await prisma.user.create({
@@ -16,11 +16,11 @@ export const createUser: RequestHandler = async (req, res) => {
     res.status(201).json({ token });
   } catch (error) {
     console.error("Error creating user: ", error);
-    res.status(500).json({ message: "Error creating user" });
+    next(error);
   }
 };
 
-export const signIn: RequestHandler = async (req, res) => {
+export const signIn: RequestHandler = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
       where: { email: req.body.email },
@@ -33,6 +33,7 @@ export const signIn: RequestHandler = async (req, res) => {
       req.body.password,
       user.password,
     );
+
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
@@ -41,6 +42,6 @@ export const signIn: RequestHandler = async (req, res) => {
     res.json({ token });
   } catch (error) {
     console.error("Error signing in: ", error);
-    res.status(500).json({ message: "Error signing in" });
+    next(error);
   }
 };
