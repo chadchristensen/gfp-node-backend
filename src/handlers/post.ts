@@ -1,8 +1,23 @@
-import { RequestHandler } from "express";
+import { NextFunction, RequestHandler, Request, Response } from "express";
 import prisma from "../db";
+import { User } from "./user";
 
+type createPostPayload = {
+  title: string;
+  slug: string;
+  description: string;
+  image_src: string;
+  image_alt_text: string;
+  publish_date: Date;
+  cta_link: string;
+  cta_text: string;
+  categoryId: string;
+  is_affiliate_link: boolean;
+  authorId: string;
+};
+
+// TODO: Add pagination and filtering
 export const getAllPosts: RequestHandler = async (req, res, next) => {
-  // TODO: Add pagination and filtering
   try {
     const posts = await prisma.post.findMany();
     res.json({ data: posts });
@@ -28,13 +43,23 @@ export const getPostById: RequestHandler = async (req, res, next) => {
 };
 
 // TODO: Fix authentication to only allow admin or authors to create posts
-export const createPost: RequestHandler = async (req, res, next) => {
+export const createPost = async (
+  req: Request & { body: createPostPayload; user?: User },
+  res: Response,
+  next: NextFunction,
+) => {
+  const { user } = req;
+  if (!user) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
   try {
     const newPost = await prisma.post.create({
-      data: { ...req.body, authorId: req.user.id },
+      data: { ...req.body, authorId: user.id },
     });
 
-    res.status(201).json({ data: newPost });
+    res.status(201);
+    res.json({ data: newPost });
   } catch (error) {
     next(error);
   }

@@ -49,6 +49,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/node": "20.14.10",
+    "@types/lodash.merge": "^4.6.9",
     "@typescript-eslint/eslint-plugin": "6.21.0",
     "@typescript-eslint/parser": "6.21.0",
     "bcryptjs": "^2.4.3",
@@ -68,6 +69,7 @@
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
+    "lodash.merge": "^4.6.2",
     "morgan": "^1.10.0"
   }
 }

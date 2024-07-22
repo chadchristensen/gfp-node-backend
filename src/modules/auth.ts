@@ -1,12 +1,7 @@
-import { RequestHandler } from "express";
-import jwt, { Secret } from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-
-// TODO: Update the User type to match your actual user schema.
-type User = {
-  id: string;
-  email: string;
-};
+import { User } from "../handlers/user";
 
 export const createJWT = (user: User) => {
   const token = jwt.sign(
@@ -18,7 +13,11 @@ export const createJWT = (user: User) => {
   return token;
 };
 
-export const protect: RequestHandler = (req, res, next) => {
+export const protect = (
+  req: Request & { user: string | JwtPayload },
+  res: Response,
+  next: NextFunction,
+) => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
@@ -29,8 +28,8 @@ export const protect: RequestHandler = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as Secret);
     req.user = decoded;
     next();
-  } catch (error) {
-    console.error("Invalid token. Please log in again. Error: ", error.message);
+  } catch (error: unknown) {
+    console.error("Invalid token. Please log in again. Error: ", error);
     return res.status(401).json({ message: "Token is not valid" });
   }
 };

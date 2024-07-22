@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { handleInputErrors } from "./modules/middleware";
 import {
   categoryValidationRules,
@@ -56,9 +56,11 @@ router.put(
 
 router.delete("/categories/:categoryId", deleteCategory);
 
-router.use((error, req, res, next) => {
-  console.error(error);
-  res.json({ message: "Error in subrouter" });
-});
+router.use(
+  (error: unknown, req: Request, res: Response, next: NextFunction) => {
+    console.error(error);
+    res.json({ message: "Error in subrouter" });
+  },
+);
 
 export default router;

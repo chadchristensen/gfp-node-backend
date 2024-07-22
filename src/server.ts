@@ -1,8 +1,12 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import router from "./router";
 import morgan from "morgan";
 import { protect } from "./modules/auth";
 import { createUser, signIn } from "./handlers/user";
+
+type Error = {
+  type: string;
+};
 
 const app = express();
 
@@ -20,7 +24,7 @@ app.use("/api", protect, router);
 app.post("/users", createUser);
 app.post("/signin", signIn);
 
-app.use((err, req, res, next) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err.type === "ValidationError") {
     res.status(401).json({ message: "Bad Request" });
   } else if (err.type === "AuthorizationError") {
@@ -28,6 +32,8 @@ app.use((err, req, res, next) => {
   } else {
     res.status(500).json({ message: "Internal Server Error" });
   }
+
+  return undefined;
 });
 
 export default app;
